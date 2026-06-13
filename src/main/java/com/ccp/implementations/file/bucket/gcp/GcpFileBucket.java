@@ -8,6 +8,11 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 
+/**
+ * Implementação de {@code CcpFileBucket} para o Google Cloud Storage. Autentica via
+ * credenciais lidas da variável de ambiente {@code credentials_file} e expõe operações
+ * de leitura ({@code get}), gravação ({@code save}) e exclusão ({@code delete}) de arquivos.
+ */
 class GcpFileBucket implements CcpFileBucket {
 	
 	public String get(String tenant, String bucketName, String fileName) {
