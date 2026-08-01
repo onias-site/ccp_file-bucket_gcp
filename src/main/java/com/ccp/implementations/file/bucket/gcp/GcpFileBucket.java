@@ -19,53 +19,75 @@ import com.google.cloud.storage.StorageOptions;
 class GcpFileBucket implements CcpFileBucket {
 	
 	public String get(String tenant, String bucketName, String fileName) {
-		String getenv = System.getenv("credentials_file");
-		FileInputStream fileInputStream = new FileInputStream(getenv);
-		Storage service = StorageOptions.newBuilder().setProjectId(tenant)
-				.setCredentials( 
-						GoogleCredentials.fromStream(fileInputStream))
-				.build().getService(); 
-		com.google.cloud.storage.Blob blob = service.get(bucketName, fileName);
-		byte[] content = blob.getContent();
-		String encodeToString = new CcpStringDecorator(content).text().asBase64().content;
-		return encodeToString;
+		try {
+			String getenv = System.getenv("credentials_file");
+			FileInputStream fileInputStream = new FileInputStream(getenv);
+			Storage service = StorageOptions.newBuilder().setProjectId(tenant)
+					.setCredentials( 
+							GoogleCredentials.fromStream(fileInputStream))
+					.build().getService(); 
+			com.google.cloud.storage.Blob blob = service.get(bucketName, fileName);
+			byte[] content = blob.getContent();
+			String encodeToString = new CcpStringDecorator(content).text().asBase64().content;
+			return encodeToString;
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
 	
 	public String delete(String tenant, String bucketName, String fileName) {
-		String getenv = System.getenv("credentials_file");
-		FileInputStream fileInputStream = new FileInputStream(getenv); 
-		Storage service = StorageOptions.newBuilder().setProjectId(tenant)
-				.setCredentials(GoogleCredentials.fromStream(fileInputStream))
-				.build().getService();
-		service.delete(BlobId.of(bucketName, fileName));
-		return fileName;
+		try {
+			String getenv = System.getenv("credentials_file");
+			FileInputStream fileInputStream = new FileInputStream(getenv); 
+			Storage service = StorageOptions.newBuilder().setProjectId(tenant)
+					.setCredentials(GoogleCredentials.fromStream(fileInputStream))
+					.build().getService();
+			service.delete(BlobId.of(bucketName, fileName));
+			return fileName;
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 
 	public String save(String tenant, String bucketName, String fileName, String fileContent) {
-		String getenv = System.getenv("credentials_file");
-		FileInputStream fileInputStream = new FileInputStream(getenv);
-		Storage service = StorageOptions.newBuilder().setProjectId(tenant)
-				.setCredentials(GoogleCredentials.fromStream(fileInputStream))
-				.build().getService();
-		byte[] bytes = Base64.getDecoder().decode(fileContent);
-		BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(bucketName, fileName)).build();
-		service.create(blobInfo, bytes);
-		return fileName;
+		try {
+			String getenv = System.getenv("credentials_file");
+			FileInputStream fileInputStream = new FileInputStream(getenv);
+			Storage service = StorageOptions.newBuilder().setProjectId(tenant)
+					.setCredentials(GoogleCredentials.fromStream(fileInputStream))
+					.build().getService();
+			byte[] bytes = Base64.getDecoder().decode(fileContent);
+			BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(bucketName, fileName)).build();
+			service.create(blobInfo, bytes);
+			return fileName;
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	public String delete(String tenant, String bucketName) {
-		String getenv = System.getenv("credentials_file");
-		FileInputStream fileInputStream = new FileInputStream(getenv);
-		Storage service = StorageOptions.newBuilder().setProjectId(tenant)
-				.setCredentials(GoogleCredentials.fromStream(fileInputStream))
-				.build().getService();
-		for (com.google.cloud.storage.Blob blob : service.list(bucketName).iterateAll()) {
-			blob.delete();
-		}
-		service.delete(bucketName);
-		return bucketName;
+		try {
+			String getenv = System.getenv("credentials_file");
+			FileInputStream fileInputStream = new FileInputStream(getenv);
+			Storage service = StorageOptions.newBuilder().setProjectId(tenant)
+					.setCredentials(GoogleCredentials.fromStream(fileInputStream))
+					.build().getService();
+			for (com.google.cloud.storage.Blob blob : service.list(bucketName).iterateAll()) {
+				blob.delete();
+			}
+			service.delete(bucketName);
+			return bucketName;
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
