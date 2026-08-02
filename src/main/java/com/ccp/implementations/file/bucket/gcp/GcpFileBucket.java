@@ -32,8 +32,8 @@ class GcpFileBucket implements CcpFileBucket {
 			return encodeToString;
 			
 		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+			throw new CcpErrorGcpFileBucketOperation(e);
+		}
 
 	}
 
@@ -49,7 +49,7 @@ class GcpFileBucket implements CcpFileBucket {
 			return fileName;
 			
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new CcpErrorGcpFileBucketOperation(e);
 		}
 
 	}
@@ -68,7 +68,7 @@ class GcpFileBucket implements CcpFileBucket {
 			return fileName;
 			
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new CcpErrorGcpFileBucketOperation(e);
 		}
 
 	}
@@ -85,9 +85,16 @@ class GcpFileBucket implements CcpFileBucket {
 			}
 			service.delete(bucketName);
 			return bucketName;
-			
+
 		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+			throw new CcpErrorGcpFileBucketOperation(e);
+		}
+	}
+
+	@SuppressWarnings("serial")
+	private static class CcpErrorGcpFileBucketOperation extends RuntimeException {
+		private CcpErrorGcpFileBucketOperation(Throwable cause) {
+			super(cause);
+		}
 	}
 }
