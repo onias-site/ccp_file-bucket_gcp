@@ -9,7 +9,8 @@ import com.ccp.especifications.file.bucket.CcpFileBucket;
 public class CcpGcpFileBucket implements CcpInstanceProvider<CcpFileBucket> {
 
 	public CcpFileBucket getInstance() {
-		return new GcpFileBucket();
+		GcpFileBucket gcpFileBucket = new GcpFileBucket();
+		return gcpFileBucket;
 	}
 
 }

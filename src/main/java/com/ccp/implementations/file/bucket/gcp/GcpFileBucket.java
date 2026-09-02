@@ -10,6 +10,9 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.ccp.decorators.CcpTextDecorator;
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
 
 /**
  * Implementação de {@code CcpFileBucket} para o Google Cloud Storage. Autentica via
@@ -22,17 +25,26 @@ class GcpFileBucket implements CcpFileBucket {
 		try {
 			String getenv = System.getenv("credentials_file");
 			FileInputStream fileInputStream = new FileInputStream(getenv);
-			Storage service = StorageOptions.newBuilder().setProjectId(tenant)
+			StorageOptions.Builder newBuilder = StorageOptions.newBuilder();
+			StorageOptions.Builder setProjectId = newBuilder.setProjectId(tenant);
+			GoogleCredentials fromStream = GoogleCredentials.fromStream(fileInputStream);
+			StorageOptions.Builder setCredentials = setProjectId
 					.setCredentials( 
-							GoogleCredentials.fromStream(fileInputStream))
-					.build().getService(); 
+							fromStream);
+							StorageOptions build = setCredentials
+							.build();
+							Storage service = build.getService(); 
 			com.google.cloud.storage.Blob blob = service.get(bucketName, fileName);
 			byte[] content = blob.getContent();
-			String encodeToString = new CcpStringDecorator(content).text().asBase64().content;
+			CcpStringDecorator ccpStringDecorator = new CcpStringDecorator(content);
+			CcpTextDecorator ccpStringDecoratorText = ccpStringDecorator.text();
+			var asBase64 = ccpStringDecoratorText.asBase64();
+			String encodeToString = asBase64.content;
 			return encodeToString;
 			
 		} catch (Exception e) {
-			throw new CcpErrorGcpFileBucketOperation(e);
+			CcpErrorGcpFileBucketOperation ccpErrorGcpFileBucketOperation = new CcpErrorGcpFileBucketOperation(e);
+			throw ccpErrorGcpFileBucketOperation;
 		}
 
 	}
@@ -42,14 +54,21 @@ class GcpFileBucket implements CcpFileBucket {
 		try {
 			String getenv = System.getenv("credentials_file");
 			FileInputStream fileInputStream = new FileInputStream(getenv); 
-			Storage service = StorageOptions.newBuilder().setProjectId(tenant)
-					.setCredentials(GoogleCredentials.fromStream(fileInputStream))
-					.build().getService();
-			service.delete(BlobId.of(bucketName, fileName));
+			StorageOptions.Builder newBuilder2 = StorageOptions.newBuilder();
+			StorageOptions.Builder setProjectId2 = newBuilder2.setProjectId(tenant);
+			GoogleCredentials fromStream2 = GoogleCredentials.fromStream(fileInputStream);
+			StorageOptions.Builder setCredentials2 = setProjectId2
+					.setCredentials(fromStream2);
+					StorageOptions build2 = setCredentials2
+					.build();
+					Storage service = build2.getService();
+					BlobId blobIdOf = BlobId.of(bucketName, fileName);
+					service.delete(blobIdOf);
 			return fileName;
 			
 		} catch (Exception e) {
-			throw new CcpErrorGcpFileBucketOperation(e);
+			CcpErrorGcpFileBucketOperation ccpErrorGcpFileBucketOperation2 = new CcpErrorGcpFileBucketOperation(e);
+			throw ccpErrorGcpFileBucketOperation2;
 		}
 
 	}
@@ -59,16 +78,25 @@ class GcpFileBucket implements CcpFileBucket {
 		try {
 			String getenv = System.getenv("credentials_file");
 			FileInputStream fileInputStream = new FileInputStream(getenv);
-			Storage service = StorageOptions.newBuilder().setProjectId(tenant)
-					.setCredentials(GoogleCredentials.fromStream(fileInputStream))
-					.build().getService();
-			byte[] bytes = Base64.getDecoder().decode(fileContent);
-			BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(bucketName, fileName)).build();
+			StorageOptions.Builder newBuilder3 = StorageOptions.newBuilder();
+			StorageOptions.Builder setProjectId3 = newBuilder3.setProjectId(tenant);
+			GoogleCredentials fromStream3 = GoogleCredentials.fromStream(fileInputStream);
+			StorageOptions.Builder setCredentials3 = setProjectId3
+					.setCredentials(fromStream3);
+					StorageOptions build3 = setCredentials3
+					.build();
+					Storage service = build3.getService();
+					Base64.Decoder decoder = Base64.getDecoder();
+					byte[] bytes = decoder.decode(fileContent);
+					BlobId blobIdOf2 = BlobId.of(bucketName, fileName);
+					BlobInfo.Builder newBuilder4 = BlobInfo.newBuilder(blobIdOf2);
+					BlobInfo blobInfo = newBuilder4.build();
 			service.create(blobInfo, bytes);
 			return fileName;
 			
 		} catch (Exception e) {
-			throw new CcpErrorGcpFileBucketOperation(e);
+			CcpErrorGcpFileBucketOperation ccpErrorGcpFileBucketOperation3 = new CcpErrorGcpFileBucketOperation(e);
+			throw ccpErrorGcpFileBucketOperation3;
 		}
 
 	}
@@ -77,17 +105,25 @@ class GcpFileBucket implements CcpFileBucket {
 		try {
 			String getenv = System.getenv("credentials_file");
 			FileInputStream fileInputStream = new FileInputStream(getenv);
-			Storage service = StorageOptions.newBuilder().setProjectId(tenant)
-					.setCredentials(GoogleCredentials.fromStream(fileInputStream))
-					.build().getService();
-			for (com.google.cloud.storage.Blob blob : service.list(bucketName).iterateAll()) {
+			StorageOptions.Builder newBuilder5 = StorageOptions.newBuilder();
+			StorageOptions.Builder setProjectId4 = newBuilder5.setProjectId(tenant);
+			GoogleCredentials fromStream4 = GoogleCredentials.fromStream(fileInputStream);
+			StorageOptions.Builder setCredentials4 = setProjectId4
+					.setCredentials(fromStream4);
+					StorageOptions build4 = setCredentials4
+					.build();
+					Storage service = build4.getService();
+					Page<Blob> serviceList = service.list(bucketName);
+					var iterateAll = serviceList.iterateAll();
+					for (com.google.cloud.storage.Blob blob : iterateAll) {
 				blob.delete();
 			}
 			service.delete(bucketName);
 			return bucketName;
 
 		} catch (Exception e) {
-			throw new CcpErrorGcpFileBucketOperation(e);
+			CcpErrorGcpFileBucketOperation ccpErrorGcpFileBucketOperation4 = new CcpErrorGcpFileBucketOperation(e);
+			throw ccpErrorGcpFileBucketOperation4;
 		}
 	}
 
