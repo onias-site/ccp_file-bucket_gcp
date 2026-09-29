@@ -4,7 +4,7 @@ import com.ccp.dependency.injection.CcpInstanceProvider;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 
 /**
- * Provedor de DI que expõe {@code GcpFileBucket} como implementação de {@code CcpFileBucket}.
+ * DI provider that exposes {@code GcpFileBucket} as the {@code CcpFileBucket} implementation.
  */
 public class CcpGcpFileBucket implements CcpInstanceProvider<CcpFileBucket> {
 
