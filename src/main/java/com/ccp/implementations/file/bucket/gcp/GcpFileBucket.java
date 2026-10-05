@@ -21,6 +21,15 @@ import com.google.cloud.storage.Blob;
  */
 class GcpFileBucket implements CcpFileBucket {
 	
+	/**
+	 * Reads the file and returns its content in Base64. The bytes go through a platform-charset string before being
+	 * encoded, so binary content may be altered.
+	 * @param tenant the GCP project id
+	 * @param bucketName the bucket
+	 * @param fileName the file
+	 * @return the content in Base64
+	 * @throws CcpErrorGcpFileBucketOperation when the operation fails
+	 */
 	public String get(String tenant, String bucketName, String fileName) {
 		try {
 			String credentialsFilePath = System.getenv("credentials_file");
@@ -50,6 +59,14 @@ class GcpFileBucket implements CcpFileBucket {
 	}
 
 	
+	/**
+	 * Deletes the file.
+	 * @param tenant the GCP project id
+	 * @param bucketName the bucket
+	 * @param fileName the file
+	 * @return the file name
+	 * @throws CcpErrorGcpFileBucketOperation when the operation fails
+	 */
 	public String delete(String tenant, String bucketName, String fileName) {
 		try {
 			String credentialsFilePath = System.getenv("credentials_file");
@@ -74,6 +91,15 @@ class GcpFileBucket implements CcpFileBucket {
 	}
 
 
+	/**
+	 * Decodes the Base64 content and writes it as the file.
+	 * @param tenant the GCP project id
+	 * @param bucketName the bucket
+	 * @param fileName the file
+	 * @param fileContent the content in Base64
+	 * @return the file name
+	 * @throws CcpErrorGcpFileBucketOperation when the operation fails
+	 */
 	public String save(String tenant, String bucketName, String fileName, String fileContent) {
 		try {
 			String credentialsFilePath = System.getenv("credentials_file");
@@ -101,6 +127,13 @@ class GcpFileBucket implements CcpFileBucket {
 
 	}
 
+	/**
+	 * Deletes every file of the bucket and then the bucket itself.
+	 * @param tenant the GCP project id
+	 * @param bucketName the bucket
+	 * @return the bucket name
+	 * @throws CcpErrorGcpFileBucketOperation when the operation fails
+	 */
 	public String delete(String tenant, String bucketName) {
 		try {
 			String credentialsFilePath = System.getenv("credentials_file");
@@ -127,8 +160,13 @@ class GcpFileBucket implements CcpFileBucket {
 		}
 	}
 
+	/** Raised when a Cloud Storage operation fails. */
 	@SuppressWarnings("serial")
 	private static class CcpErrorGcpFileBucketOperation extends RuntimeException {
+		/**
+		 * Wraps the cause.
+		 * @param cause the original failure
+		 */
 		private CcpErrorGcpFileBucketOperation(Throwable cause) {
 			super(cause);
 		}

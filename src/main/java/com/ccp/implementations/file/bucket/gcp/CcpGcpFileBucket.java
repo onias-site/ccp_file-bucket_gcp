@@ -8,6 +8,10 @@ import com.ccp.especifications.file.bucket.CcpFileBucket;
  */
 public class CcpGcpFileBucket implements CcpInstanceProvider<CcpFileBucket> {
 
+	/**
+	 * Builds the Google Cloud Storage implementation of {@code CcpFileBucket}.
+	 * @return a new {@code GcpFileBucket}
+	 */
 	public CcpFileBucket getInstance() {
 		GcpFileBucket gcpFileBucket = new GcpFileBucket();
 		return gcpFileBucket;
