@@ -19,6 +19,10 @@ import com.google.cloud.storage.StorageOptions;
  * read ({@code get}), write ({@code save}) and delete ({@code delete}) operations.
  */
 class GcpFileBucket implements CcpFileBucket {
+	/** The single instance: the class keeps no state. */
+	public final static GcpFileBucket INSTANCE = new GcpFileBucket();
+
+	private GcpFileBucket() {}
 
 	/**
 	 * Builds the Cloud Storage client of the project, with the credentials of the {@code credentials_file} environment
